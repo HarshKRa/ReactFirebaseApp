@@ -6,7 +6,6 @@ import {
   createTheme,
   CssBaseline,
   Grid,
-  Grid2,
   Link,
   TextField,
   ThemeProvider,

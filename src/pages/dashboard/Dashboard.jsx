@@ -18,7 +18,6 @@ import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../uitls/firebase";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
-import { Delete } from "@mui/icons-material";
 
 const Dashboard = () => {
   const navigate = useNavigate();

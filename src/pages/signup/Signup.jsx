@@ -6,7 +6,6 @@ import {
   createTheme,
   CssBaseline,
   Grid,
-  Grid2,
   Link,
   TextField,
   ThemeProvider,
@@ -42,7 +41,7 @@ const Signup = () => {
         formValue.password
       );
       console.log("Signup successfull ", response);
-      navigate("/login")
+      navigate("/login");
     } catch (error) {
       console.error(error.message);
     }

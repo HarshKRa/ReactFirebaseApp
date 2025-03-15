@@ -1,12 +1,6 @@
 import { auth } from "../uitls/firebase";
 
-const {
-  createContext,
-  useState,
-  useEffect,
-  use,
-  useContext,
-} = require("react");
+const { createContext, useState, useEffect, useContext } = require("react");
 
 const AuthContext = createContext();
 
