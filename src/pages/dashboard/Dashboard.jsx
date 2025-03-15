@@ -1,3 +1,4 @@
+import React, { useEffect, useState, useCallback } from "react";
 import {
   Box,
   Button,
@@ -13,7 +14,6 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import React, { use, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
 import { auth, db } from "../../uitls/firebase";
@@ -24,20 +24,26 @@ const Dashboard = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchUsers = async () => {
-    const response = await getDocs(collection(db, "users"));
-    const userList = response.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setUsers(userList);
-    setLoading(false);
-    console.log(users);
-  };
+  // ✅ Use useCallback to prevent unnecessary recreation
+  const fetchUsers = useCallback(async () => {
+    setLoading(true);
+    try {
+      const response = await getDocs(collection(db, "users"));
+      const userList = response.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUsers(userList);
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchUsers();
-  }, []);
+  }, [fetchUsers]); // ✅ Include fetchUsers as a dependency
 
   const handlePostNewUser = () => {
     navigate("/user");
@@ -45,7 +51,7 @@ const Dashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await signOut(auth);
+      await signOut(auth);
       navigate("/login");
     } catch (error) {
       console.log(error.message);
@@ -55,7 +61,7 @@ const Dashboard = () => {
   const handleDelete = async (id) => {
     try {
       await deleteDoc(doc(db, "users", id));
-      fetchUsers();
+      fetchUsers(); // ✅ Refresh the user list after deletion
     } catch (error) {
       console.log(error.message);
     }
@@ -96,13 +102,13 @@ const Dashboard = () => {
         <TableBody>
           {loading ? (
             <TableRow>
-              <TableCell colSpan={4} sx={{ textAlign: "center" }}>
+              <TableCell colSpan={5} sx={{ textAlign: "center" }}>
                 <h3>Loading...</h3>
               </TableCell>
             </TableRow>
           ) : users.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={4} sx={{ textAlign: "center" }}>
+              <TableCell colSpan={5} sx={{ textAlign: "center" }}>
                 No users found
               </TableCell>
             </TableRow>
